@@ -107,4 +107,10 @@ public class MovePlayer : MonoBehaviour
     {
         readyToJump = true;
     }
+
+    public void StopMovement()
+    {
+        player.velocity = Vector3.zero;          // Stops linear movement
+        player.angularVelocity = Vector3.zero;    // Stops any rotation
+    }
 }

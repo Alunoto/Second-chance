@@ -17,6 +17,7 @@ public class Revive : MonoBehaviour
     public void RevivePlayer()
     {
         player.transform.position = position;
+        player.GetComponent<MovePlayer>().StopMovement();
 
         if (isTutorial)
             controller.GetComponent<Tutorial>().phaseNumber = 0;
