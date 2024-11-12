@@ -5,17 +5,18 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     public int id;
-    private GameObject GateGroup;
     private TeleportDistributor teleportDistributor;
 
     void Start()
     {
-        GateGroup = this.transform.parent;
-        teleportDistributor = GateGroup.GetComponent<TeleportDistributor>();
+        teleportDistributor = GetComponentInParent<TeleportDistributor>();
     }
 
-    private voidOnTriggerEnter()
+    private void OnTriggerEnter()
     {
-        teleportDistributor.Teleport(id);
+        if (!teleportDistributor.isTeleported)
+            teleportDistributor.Teleport(id);
+        else
+            teleportDistributor.isTeleported = false;
     }
 }

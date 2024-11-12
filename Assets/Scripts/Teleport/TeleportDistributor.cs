@@ -6,16 +6,16 @@ public class TeleportDistributor : MonoBehaviour
 {
     public GameObject player;
     private Teleport[] teleports;
-    private int i = 0;
+    private int i;
+    public bool isTeleported = false;
     // Start is called before the first frame update
     void Start()
     {
-        teleports = this.getComponentsInChildren<Teleport>();
+        teleports = this.GetComponentsInChildren<Teleport>();
 
-        foreach(Teleport teleport in teleports)
+        for(i = 0; i < teleports.Length; i++)
         {
-            teleport.id = i;
-            i++;
+            teleports[i].id = i;
         }
     }
 
@@ -23,11 +23,19 @@ public class TeleportDistributor : MonoBehaviour
     {
         if (i <= 1)
             return;
+        Debug.Log(id);
+        int rand = id;
         do
         {
-            int rand = Random.Range(0, i);
-        } while (rand == id)
-        
+            rand = Random.Range(0, i);
+        } while (rand == id);
+
+        Debug.Log(rand);
+        Debug.Log(teleports[id].transform.position);
+        Debug.Log(player.transform.position);
+        Debug.Log(teleports[rand].transform.position);
+
         player.transform.position = teleports[rand].transform.position;
+        isTeleported = true;
     }
 }
