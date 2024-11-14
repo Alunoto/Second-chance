@@ -20,8 +20,13 @@ public class MovePlayer : MonoBehaviour
 
     [Header("Ground check")]
     public float playerHeight;
-    public LayerMask whatIsGround;
     bool grounded;
+
+    [Header("Gravity")]
+    private float x, y, z, alpha, xp, zp;
+    Vector3 gOrientation;
+    int dirHelper;
+    public GameObject body;
 
     public Transform orientation;
 
@@ -34,25 +39,43 @@ public class MovePlayer : MonoBehaviour
     void Start()
     {
         player = GetComponent<Rigidbody>(); 
-        player.freezeRotation = true;   
+        player.freezeRotation = true;
+        player.useGravity = false;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Check if the collided object is the torus
+        if (collision.gameObject.CompareTag("Torus"))
+        {
+            grounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Torus"))
+        {
+            grounded = false;
+        }
     }
 
     void Update()
     {
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
-
         GetInput();
         LimitSpeed();
 
-        if (grounded)
-            player.drag = groundDrag;
-        else
-            player.drag = 0;
+        /*        if (grounded)
+                    player.drag = groundDrag;
+                else
+                    player.drag = 0;*/
+
+
     }
 
     private void FixedUpdate()
     {
         Move();
+        ApplyGravity();
     }
 
     private void GetInput()
@@ -67,12 +90,11 @@ public class MovePlayer : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-        if (Input.GetKeyDown(reverseGravityKey))
+/*        if (Input.GetKeyDown(reverseGravityKey))
         {
-            Debug.Log("heyho");
             float oldGravity = Physics.gravity.y;
             Physics.gravity = new Vector3(0, oldGravity * -1, 0);
-        }
+        }*/
     }
 
     private void Move()
@@ -98,9 +120,9 @@ public class MovePlayer : MonoBehaviour
 
     private void Jump()
     {
-        player.velocity = new Vector3(player.velocity.x, 0f, player.velocity.z);
+        //player.velocity = new Vector3(player.velocity.x, 0f, player.velocity.z);
 
-        player.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        player.AddForce(gOrientation * -0.01f * jumpForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
@@ -112,5 +134,40 @@ public class MovePlayer : MonoBehaviour
     {
         player.velocity = Vector3.zero;          // Stops linear movement
         player.angularVelocity = Vector3.zero;    // Stops any rotation
+    }
+
+    private void ApplyGravity()
+    {
+        x = player.transform.position.x;
+        z = player.transform.position.z;
+        alpha = Mathf.Atan((Mathf.Sqrt(x*x)) / Mathf.Sqrt(z*z));
+
+        xp = 250 * Mathf.Sin(alpha);
+        zp = 250 * Mathf.Cos(alpha);
+
+        if (x < 0f)
+            xp = xp * -1; 
+
+        if (z < 0f)
+            zp = zp * -1;
+
+/*        Debug.Log("punkty bazowe: "+ xp +", " + zp);
+        Debug.Log("lokalizacja: "+ x + ", " + z);
+        Debug.Log("k¹t: " + alpha);
+        Debug.Log(player.velocity);*/
+
+/*        if (x * x + z * z < 62500f)
+            dirHelper = -1;
+        else
+            dirHelper = 1;*/
+        gOrientation = new Vector3((xp-x), player.transform.position.y * -1, (zp -z));
+        Debug.Log(gOrientation);
+        //player.velocity = Vector3.zero;
+        player.AddForce(gOrientation.normalized * 10f, ForceMode.Acceleration);
+        player.freezeRotation = false;
+        gOrientation.x = gOrientation.x * 0.5f;
+        gOrientation.z = gOrientation.z * 0.5f;
+        player.rotation = Quaternion.Euler(gOrientation*-1f);
+        player.freezeRotation = true;
     }
 }
