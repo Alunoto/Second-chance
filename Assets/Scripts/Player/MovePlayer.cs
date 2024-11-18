@@ -27,6 +27,7 @@ public class MovePlayer : MonoBehaviour
     Vector3 gOrientation;
     int dirHelper;
     public GameObject body;
+    int reverseGravity = 1;
 
     public Transform orientation;
 
@@ -62,12 +63,14 @@ public class MovePlayer : MonoBehaviour
     void Update()
     {
         GetInput();
-        LimitSpeed();
 
-        /*        if (grounded)
-                    player.drag = groundDrag;
-                else
-                    player.drag = 0;*/
+        if (grounded)
+        {
+            player.drag = groundDrag;
+            LimitSpeed();
+        }
+        else
+            player.drag = 0.5f;
 
 
     }
@@ -90,18 +93,18 @@ public class MovePlayer : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
-/*        if (Input.GetKeyDown(reverseGravityKey))
+        if (Input.GetKeyDown(reverseGravityKey))
         {
-            float oldGravity = Physics.gravity.y;
-            Physics.gravity = new Vector3(0, oldGravity * -1, 0);
-        }*/
+            reverseGravity = reverseGravity * -1;
+        }
     }
 
     private void Move()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        moveDirection = body.transform.forward * verticalInput + body.transform.right * horizontalInput;//orientation.right * horizontalInput;
 
-        if(grounded)
+        Debug.Log("forward: " + body.transform.forward + ", rotation: " + body.transform.rotation);
+        if (grounded)
             player.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         else
             player.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
@@ -151,23 +154,26 @@ public class MovePlayer : MonoBehaviour
         if (z < 0f)
             zp = zp * -1;
 
-/*        Debug.Log("punkty bazowe: "+ xp +", " + zp);
-        Debug.Log("lokalizacja: "+ x + ", " + z);
-        Debug.Log("k¹t: " + alpha);
-        Debug.Log(player.velocity);*/
+        gOrientation = new Vector3((xp - x), player.transform.position.y * -1, (zp - z)) * reverseGravity;
 
-/*        if (x * x + z * z < 62500f)
-            dirHelper = -1;
-        else
-            dirHelper = 1;*/
-        gOrientation = new Vector3((xp-x), player.transform.position.y * -1, (zp -z));
+        gOrientation.Normalize();
         Debug.Log(gOrientation);
         //player.velocity = Vector3.zero;
-        player.AddForce(gOrientation.normalized * 10f, ForceMode.Acceleration);
+        player.AddForce(gOrientation * 10f, ForceMode.Acceleration);
+        alpha = Mathf.Acos((gOrientation.z * 1)/(Mathf.Sqrt(gOrientation.x * gOrientation.x + gOrientation.z * gOrientation.z)));
+        alpha = alpha*180f/Mathf.PI;
+        if (gOrientation.x < 0f)
+        {
+            alpha = 360 - alpha;
+        }
+
         player.freezeRotation = false;
-        gOrientation.x = gOrientation.x * 0.5f;
-        gOrientation.z = gOrientation.z * 0.5f;
-        player.rotation = Quaternion.Euler(gOrientation*-1f);
+        player.rotation = Quaternion.LookRotation(gOrientation);
+        //player.rotation = Quaternion.Euler(gOrientation.y * -90f - 90f, 0f, alpha - alpha*Mathf.Abs(gOrientation.y));
+        //Quaternion targetRotation = Quaternion.LookRotation(player.transform.forward, -gOrientation.normalized);
+
+        // Smoothly rotate the cylinder toward the target rotation
+        //player.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
         player.freezeRotation = true;
     }
 }

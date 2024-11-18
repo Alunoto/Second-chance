@@ -15,7 +15,7 @@ public class Tutorial : MonoBehaviour
 
     void Update()
     {
-       phaseSelector(ref phaseNumber);
+       phaseSelector(ref phaseNumber);   //wazne important
     }
 
     void phaseSelector(ref int phaseNumber)
@@ -23,7 +23,7 @@ public class Tutorial : MonoBehaviour
         switch (phaseNumber)
         {
             case 0:
-                mc.message.createNew("Welcome to the world", false);
+                mc.message.createNew("Mission and message system", false);
                 phaseNumber++;
                 break;
             case 1:
@@ -41,7 +41,7 @@ public class Tutorial : MonoBehaviour
                 }
                 break;
             case 3:
-                if(Input.GetButtonDown("Jump"))
+                if(Input.GetButtonDown("Jump by pressing space button"))
                 {
                     mc.message.createNew("fly", true);
                     phaseNumber++;
