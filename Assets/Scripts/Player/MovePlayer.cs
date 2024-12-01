@@ -1,9 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MovePlayer : MonoBehaviour
 {
+    public NewInputs inputs;
+    private InputAction move;
+    private InputAction reverse;
+    private InputAction jump;
+
     [Header("Movement")]
     public float moveSpeed;
 
@@ -23,8 +29,8 @@ public class MovePlayer : MonoBehaviour
     bool grounded;
 
     [Header("Gravity")]
-    private float x, y, z, alpha, xp, zp;
-    Vector3 gOrientation;
+    public float x, y, z, alpha, xp, zp;
+    public Vector3 gOrientation, gOrientationFull;
     int dirHelper;
     public GameObject body;
     int reverseGravity = 1;
@@ -42,6 +48,32 @@ public class MovePlayer : MonoBehaviour
         player = GetComponent<Rigidbody>(); 
         player.freezeRotation = true;
         player.useGravity = false;
+    }
+
+    private void Awake()
+    {
+        inputs = new NewInputs();
+    }
+
+    private void OnEnable()
+    {
+        move = inputs.player.move;
+        move.Enable();
+
+        reverse = inputs.player.reverse;
+        reverse.Enable();
+        reverse.performed += Reverse;
+
+        jump = inputs.player.jump;
+        jump.Enable();
+        jump.performed += Jump;
+    }
+
+    private void OnDisable()
+    {
+        move.Disable();
+        reverse.Disable();
+        jump.Disable();
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -72,7 +104,21 @@ public class MovePlayer : MonoBehaviour
         else
             player.drag = 0.5f;
 
+    }
 
+    private void Reverse(InputAction.CallbackContext callbackContext)
+    {
+        reverseGravity = reverseGravity * -1;
+    }
+
+    private void Jump(InputAction.CallbackContext callbackContext)
+    {
+        if (readyToJump && grounded)
+        {
+            readyToJump = false;
+            player.AddForce(gOrientation * -1f * jumpForce, ForceMode.Impulse);
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
 
     private void FixedUpdate()
@@ -86,24 +132,12 @@ public class MovePlayer : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-
-        if (Input.GetKeyDown(reverseGravityKey))
-        {
-            reverseGravity = reverseGravity * -1;
-        }
     }
 
     private void Move()
     {
         moveDirection = body.transform.forward * verticalInput + body.transform.right * horizontalInput;//orientation.right * horizontalInput;
 
-        Debug.Log("forward: " + body.transform.forward + ", rotation: " + body.transform.rotation);
         if (grounded)
             player.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
         else
@@ -119,13 +153,6 @@ public class MovePlayer : MonoBehaviour
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             player.velocity = new Vector3(limitedVel.x, player.velocity.y, limitedVel.z);
         }
-    }
-
-    private void Jump()
-    {
-        //player.velocity = new Vector3(player.velocity.x, 0f, player.velocity.z);
-
-        player.AddForce(gOrientation * -0.01f * jumpForce, ForceMode.Impulse);
     }
 
     private void ResetJump()
@@ -145,20 +172,21 @@ public class MovePlayer : MonoBehaviour
         z = player.transform.position.z;
         alpha = Mathf.Atan((Mathf.Sqrt(x*x)) / Mathf.Sqrt(z*z));
 
-        xp = 250 * Mathf.Sin(alpha);
-        zp = 250 * Mathf.Cos(alpha);
-
         if (x < 0f)
-            xp = xp * -1; 
+            xp = 250 * Mathf.Sin(alpha) * -1;
+        else
+            xp = 250 * Mathf.Sin(alpha);
 
         if (z < 0f)
-            zp = zp * -1;
+            zp = 250 * Mathf.Cos(alpha) -1;
+        else
+            zp = 250 * Mathf.Cos(alpha);
 
         gOrientation = new Vector3((xp - x), player.transform.position.y * -1, (zp - z)) * reverseGravity;
+        gOrientationFull = gOrientation;
 
         gOrientation.Normalize();
-        Debug.Log(gOrientation);
-        //player.velocity = Vector3.zero;
+
         player.AddForce(gOrientation * 10f, ForceMode.Acceleration);
         alpha = Mathf.Acos((gOrientation.z * 1)/(Mathf.Sqrt(gOrientation.x * gOrientation.x + gOrientation.z * gOrientation.z)));
         alpha = alpha*180f/Mathf.PI;
