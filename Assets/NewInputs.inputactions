@@ -6,18 +6,18 @@
             "id": "e2bcaf2b-ea30-45e3-9009-6a5b98eb9dd4",
             "actions": [
                 {
-                    "name": "move",
+                    "name": "reverse",
                     "type": "Button",
-                    "id": "45f5839f-6597-4d2a-8f60-693a8763a45c",
+                    "id": "f5a09580-ffd5-4b2d-95b6-3a953ed5da27",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "reverse",
+                    "name": "move",
                     "type": "Button",
-                    "id": "f5a09580-ffd5-4b2d-95b6-3a953ed5da27",
+                    "id": "45f5839f-6597-4d2a-8f60-693a8763a45c",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -34,17 +34,6 @@
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "793dd946-5aec-496b-bc53-cd7db6e7fe1f",
-                    "path": "<Keyboard>/leftCtrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "reverse",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "ca117a22-d329-4d3e-a02e-558bc86435d5",
@@ -121,6 +110,17 @@
                     "action": "move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "793dd946-5aec-496b-bc53-cd7db6e7fe1f",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

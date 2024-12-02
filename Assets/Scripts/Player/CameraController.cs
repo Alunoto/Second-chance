@@ -40,24 +40,14 @@ public class CameraController : MonoBehaviour
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, 20f, 150f);
 
-        float alphaPitchRadians = pitch * Mathf.Deg2Rad; // Convert degrees to radians
+        float alphaPitchRadians = pitch * Mathf.Deg2Rad;
         float alphaYawRadians = yaw * Mathf.Deg2Rad;
 
-        Debug.Log("yaw: " + alphaYawRadians + ", pitch: " + pitch);
 
-        // Calculate rotations
         Quaternion yawRotation = Quaternion.AngleAxis(yaw, up);
         forwardRotated = yawRotation * customForward;
         Vector3 result = (Mathf.Cos(alphaPitchRadians) * up + Mathf.Sin(alphaPitchRadians) * forwardRotated).normalized;
 
-        // Apply rotation to camera
-
-        //transform.rotation = targetRotation;
-
-        // Follow player with offset
-        //transform.position = playerTransform.position + targetRotation * cameraOffset;
-
-        /*transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);*/
         player.transform.rotation = Quaternion.LookRotation(up);
 
         transform.rotation = Quaternion.LookRotation(result, (down * -1f).normalized);

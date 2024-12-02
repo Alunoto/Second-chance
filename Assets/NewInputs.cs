@@ -28,18 +28,18 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
             ""id"": ""e2bcaf2b-ea30-45e3-9009-6a5b98eb9dd4"",
             ""actions"": [
                 {
-                    ""name"": ""move"",
+                    ""name"": ""reverse"",
                     ""type"": ""Button"",
-                    ""id"": ""45f5839f-6597-4d2a-8f60-693a8763a45c"",
+                    ""id"": ""f5a09580-ffd5-4b2d-95b6-3a953ed5da27"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""reverse"",
+                    ""name"": ""move"",
                     ""type"": ""Button"",
-                    ""id"": ""f5a09580-ffd5-4b2d-95b6-3a953ed5da27"",
+                    ""id"": ""45f5839f-6597-4d2a-8f60-693a8763a45c"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -56,17 +56,6 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""793dd946-5aec-496b-bc53-cd7db6e7fe1f"",
-                    ""path"": ""<Keyboard>/leftCtrl"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""reverse"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""ca117a22-d329-4d3e-a02e-558bc86435d5"",
@@ -143,6 +132,17 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
                     ""action"": ""move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""793dd946-5aec-496b-bc53-cd7db6e7fe1f"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""reverse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -151,8 +151,8 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
 }");
         // player
         m_player = asset.FindActionMap("player", throwIfNotFound: true);
-        m_player_move = m_player.FindAction("move", throwIfNotFound: true);
         m_player_reverse = m_player.FindAction("reverse", throwIfNotFound: true);
+        m_player_move = m_player.FindAction("move", throwIfNotFound: true);
         m_player_jump = m_player.FindAction("jump", throwIfNotFound: true);
     }
 
@@ -215,15 +215,15 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
     // player
     private readonly InputActionMap m_player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_player_move;
     private readonly InputAction m_player_reverse;
+    private readonly InputAction m_player_move;
     private readonly InputAction m_player_jump;
     public struct PlayerActions
     {
         private @NewInputs m_Wrapper;
         public PlayerActions(@NewInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @move => m_Wrapper.m_player_move;
         public InputAction @reverse => m_Wrapper.m_player_reverse;
+        public InputAction @move => m_Wrapper.m_player_move;
         public InputAction @jump => m_Wrapper.m_player_jump;
         public InputActionMap Get() { return m_Wrapper.m_player; }
         public void Enable() { Get().Enable(); }
@@ -234,12 +234,12 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @move.started += instance.OnMove;
-            @move.performed += instance.OnMove;
-            @move.canceled += instance.OnMove;
             @reverse.started += instance.OnReverse;
             @reverse.performed += instance.OnReverse;
             @reverse.canceled += instance.OnReverse;
+            @move.started += instance.OnMove;
+            @move.performed += instance.OnMove;
+            @move.canceled += instance.OnMove;
             @jump.started += instance.OnJump;
             @jump.performed += instance.OnJump;
             @jump.canceled += instance.OnJump;
@@ -247,12 +247,12 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @move.started -= instance.OnMove;
-            @move.performed -= instance.OnMove;
-            @move.canceled -= instance.OnMove;
             @reverse.started -= instance.OnReverse;
             @reverse.performed -= instance.OnReverse;
             @reverse.canceled -= instance.OnReverse;
+            @move.started -= instance.OnMove;
+            @move.performed -= instance.OnMove;
+            @move.canceled -= instance.OnMove;
             @jump.started -= instance.OnJump;
             @jump.performed -= instance.OnJump;
             @jump.canceled -= instance.OnJump;
@@ -275,8 +275,8 @@ public partial class @NewInputs: IInputActionCollection2, IDisposable
     public PlayerActions @player => new PlayerActions(this);
     public interface IPlayerActions
     {
-        void OnMove(InputAction.CallbackContext context);
         void OnReverse(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
     }
 }

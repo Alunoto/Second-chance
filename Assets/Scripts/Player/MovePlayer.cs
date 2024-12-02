@@ -52,7 +52,19 @@ public class MovePlayer : MonoBehaviour
 
     private void Awake()
     {
-        inputs = new NewInputs();
+        inputs = FindObjectOfType<SettingsMenu>().inputActions;
+        if (inputs == null)
+        {
+            inputs = new NewInputs();
+        }
+        Debug.Log(inputs);
+    }
+    public void RefreshBindings()
+    {
+        // Disable and re-enable the action map to refresh the bindings
+        var actionMap = inputs.asset.actionMaps[0]; // Assuming one action map
+        actionMap.Disable();
+        actionMap.Enable();
     }
 
     private void OnEnable()
