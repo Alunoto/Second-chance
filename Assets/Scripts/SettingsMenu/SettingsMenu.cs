@@ -11,6 +11,8 @@ public class SettingsMenu : MonoBehaviour
     public GameObject panel;
     public Slider brightnessSlider;
     public Image brightnessOverlay;
+    public Canvas messageCanvas;
+    private Message message;
 
     public NewInputs inputActions;
     public Button rebindButton;
@@ -32,6 +34,7 @@ public class SettingsMenu : MonoBehaviour
 
     void Start()
     {
+        message = messageCanvas.GetComponent<Message>();
         panel.SetActive(false);
         brightnessSlider.onValueChanged.AddListener(OnBrightnessChanged);
         brightnessSlider.value = 0.5f; // Default brightness
@@ -58,12 +61,16 @@ public class SettingsMenu : MonoBehaviour
                 PauseGame();
             }
         }
+        if (isPaused)
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+        }
     }
 
     void PauseGame()
     {
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
+        message.panel.SetActive(false);
         panel.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
@@ -74,6 +81,7 @@ public class SettingsMenu : MonoBehaviour
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
         panel.SetActive(false);
+        message.panel.SetActive(true);
         Time.timeScale = 1f;
         isPaused = false;
     }

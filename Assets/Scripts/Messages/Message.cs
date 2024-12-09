@@ -25,6 +25,15 @@ public class Message : MonoBehaviour
         panel.SetActive(false);
     }
 
+    private void Update()
+    {
+        if (!clicked)
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            UnityEngine.Cursor.visible = true;
+        }
+    }
+
     public void ButtonAction()
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -51,9 +60,6 @@ public class Message : MonoBehaviour
         button.SetActive(true);
         panel.SetActive(true);
         minimize = min;
-
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
-        UnityEngine.Cursor.visible = true;
     }
 
     private void moveToCenter()

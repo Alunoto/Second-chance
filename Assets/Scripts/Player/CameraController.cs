@@ -11,7 +11,7 @@ public class CameraController : MonoBehaviour
 
     public GameObject player;
     private MovePlayer movePlayer;
-    Vector3 down, customRight, customForward, up, forwardRotated;
+    Vector3 customDown, customRight, customForward, customUp, forwardRotated;
 
     public Transform orientation;
 
@@ -29,12 +29,20 @@ public class CameraController : MonoBehaviour
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 
-        down = movePlayer.gOrientationFull;
-        customRight = new Vector3(-player.transform.position.z, 0, player.transform.position.x);
-        up = (down * -1f).normalized;
-
-        customForward = Vector3.Cross(down, customRight).normalized;
-
+        if (movePlayer.customGravity)
+        {
+            customDown = movePlayer.gOrientation.normalized * movePlayer.reverseGravity;
+            customRight = new Vector3(-player.transform.position.z, 0, player.transform.position.x).normalized;
+            customUp = (customDown * -1f).normalized;
+            customForward = Vector3.Cross(customDown, customRight).normalized;
+        }
+        else
+        {
+            customDown = new Vector3(0f, -1f, 0f);
+            customRight = new Vector3(1f, 0f, 0f);
+            customUp = (customDown * -1f).normalized;
+            customForward = Vector3.Cross(customDown, customRight).normalized;
+        }
 
         yaw += mouseX;
         pitch -= mouseY;
@@ -43,15 +51,10 @@ public class CameraController : MonoBehaviour
         float alphaPitchRadians = pitch * Mathf.Deg2Rad;
         float alphaYawRadians = yaw * Mathf.Deg2Rad;
 
-
-        Quaternion yawRotation = Quaternion.AngleAxis(yaw, up);
+        Quaternion yawRotation = Quaternion.AngleAxis(yaw, customUp);
         forwardRotated = yawRotation * customForward;
-        Vector3 result = (Mathf.Cos(alphaPitchRadians) * up + Mathf.Sin(alphaPitchRadians) * forwardRotated).normalized;
+        Vector3 result = (Mathf.Cos(alphaPitchRadians) * customUp + Mathf.Sin(alphaPitchRadians) * forwardRotated).normalized;
 
-        player.transform.rotation = Quaternion.LookRotation(up);
-
-        transform.rotation = Quaternion.LookRotation(result, (down * -1f).normalized);
-
-
+        transform.rotation = Quaternion.LookRotation(result, customUp);
     }
 }

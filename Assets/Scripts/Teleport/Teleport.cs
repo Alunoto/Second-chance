@@ -5,11 +5,11 @@ using UnityEngine;
 public class Teleport : MonoBehaviour
 {
     public int id;
-    private TeleportDistributor teleportDistributor;
+    private TeleportDistributor2 teleportDistributor;
 
     void Start()
     {
-        teleportDistributor = GetComponentInParent<TeleportDistributor>();
+        teleportDistributor = GetComponentInParent<TeleportDistributor2>();
     }
 
     private void OnTriggerEnter()
