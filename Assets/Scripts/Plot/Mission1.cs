@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class Mission1 : AAMissionTemplate
 {
+    private int indicator = -1;
+    public GameObject player;
+    private MovePlayer movePlayer;
+
+    private void OnEnable()
+    {
+        // Subscribe to the event
+        Teleport.OnTeleportTriggered += RespondToTeleport;
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe to avoid memory leaks
+        Teleport.OnTeleportTriggered -= RespondToTeleport;
+    }
     void Update()
     {
         phaseSelector(ref phaseNumber);
@@ -12,20 +27,73 @@ public class Mission1 : AAMissionTemplate
             switch (phaseNumber)
             {
                 case 0:
-                    mc.message.createNew("Mission 1", false);
+                    mc.message.createNew("This is your first mission", false);
                     phaseNumber++;
                     break;
                 case 1:
                     if (mc.message.clicked == true)
                     {
-                        mc.message.createNew("wooooooooo", true);
+                        mc.message.createNew("Please go the indicated teleport", true);
                         phaseNumber++;
                     }
+                    break;
+                case 2:
+                    if (indicator == 0)
+                    {
+                        mc.message.createNew("Please go the next one", true);
+                        phaseNumber++;
+                    }
+                    break;
+                case 3:
+                    if (indicator == 2)
+                    {
+                        mc.message.createNew("Oh hey, you got your gravity back to normal, enjoy it", false);
+                        phaseNumber++;
+                    }
+                    break;
+                case 4:
+                    if (mc.message.clicked == true)
+                    {
+                        player.transform.position = new Vector3(player.transform.position.x, player.transform.position.y - 200, player.transform.position.z);
+                        mc.message.createNew("What is happening?", false);
+                        phaseNumber++;
+                    }
+                    break;
+                case 5:
+                    if (mc.message.clicked == true && player.transform.position.y < -100)
+                    {
+                        mc.message.createNew("Oh hey, you got back to your new world", false);
+                        phaseNumber++;
+                    }
+                    break;
+                case 6:
+                    if (mc.message.clicked == true)
+                    {
+                        mc.message.createNew("You can reverse gravity and fly back to torus to play a little, at some point its gravity will intercept you", true);
+                        phaseNumber++;
+                    }
+                    break;
+                case 7:
+                    if (mc.message.clicked == true && player.transform.position.y > 500)
+                    {
+                        mc.message.createNew("You got intercepted by thorus gravity", true);
+                        movePlayer = player.GetComponent<MovePlayer>();
+                        movePlayer.reverseGravity = 1;
+                        movePlayer.ChangeGravity();
+                        phaseNumber++;
+                    }
+                    break;
+                case 8:
                     break;
                 default:
                     End();
                     break;
             }
         }
+    }
+
+    private void RespondToTeleport(int id)
+    {
+        indicator = id;
     }
 }

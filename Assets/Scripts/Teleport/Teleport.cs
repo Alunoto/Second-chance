@@ -6,6 +6,8 @@ public class Teleport : MonoBehaviour
 {
     public int id;
     private TeleportDistributor2 teleportDistributor;
+    public delegate void FunctionTriggeredHandler(int id);
+    public static event FunctionTriggeredHandler OnTeleportTriggered;
 
     void Start()
     {
@@ -15,7 +17,10 @@ public class Teleport : MonoBehaviour
     private void OnTriggerEnter()
     {
         if (!teleportDistributor.isTeleported)
+        {
             teleportDistributor.Teleport(id);
+            OnTeleportTriggered.Invoke(id);
+        }
         else
             teleportDistributor.isTeleported = false;
     }

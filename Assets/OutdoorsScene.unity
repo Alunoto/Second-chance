@@ -5447,6 +5447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   phaseNumber: 0
+  player: {fileID: 150215384}
 --- !u!114 &2004439398
 MonoBehaviour:
   m_ObjectHideFlags: 0

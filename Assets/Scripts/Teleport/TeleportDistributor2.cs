@@ -26,7 +26,6 @@ public class TeleportDistributor2 : MonoBehaviour
         if (id == 2)
         {
             movePlayer.ChangeGravity();
-            Debug.Log("weszlo");
         }
 
         if (id == 3)
@@ -35,6 +34,7 @@ public class TeleportDistributor2 : MonoBehaviour
         }
 
         player.transform.position = teleports[id+1].transform.position;
+        teleports[id + 1].enabled = false;
         //Debug.Log(teleports[id + 1].transform.position);
         isTeleported = true;
     }

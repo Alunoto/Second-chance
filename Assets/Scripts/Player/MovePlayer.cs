@@ -40,7 +40,10 @@ public class MovePlayer : MonoBehaviour
     public int reverseGravity = 1;
     public bool customGravity = true;
 
-    
+    public delegate void FunctionTriggeredHandler();
+    public static event FunctionTriggeredHandler OnJumpTriggered, OnReverseTriggered;
+
+
     void Start()
     {
         player = GetComponent<Rigidbody>();
@@ -135,6 +138,8 @@ public class MovePlayer : MonoBehaviour
             reverseGravity = reverseGravity * -1;
         else
             Physics.gravity = Physics.gravity * -1f;
+
+        OnReverseTriggered?.Invoke();
     }
 
     private void Jump(InputAction.CallbackContext callbackContext)
@@ -144,6 +149,7 @@ public class MovePlayer : MonoBehaviour
             readyToJump = false;
             player.AddForce(gOrientation * -1f * jumpForce, ForceMode.Impulse);
             Invoke(nameof(ResetJump), jumpCooldown);
+            OnJumpTriggered?.Invoke();
         }
     }
 
