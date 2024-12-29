@@ -14,6 +14,7 @@ public class TeleportDistributor2 : MonoBehaviour
     {
         teleports = this.GetComponentsInChildren<Teleport>();
         movePlayer = player.GetComponent<MovePlayer>();
+        gameObject.SetActive(false);
 
        /* for(i = 0; i < teleports.Length; i++)
         {
@@ -34,7 +35,7 @@ public class TeleportDistributor2 : MonoBehaviour
         }
 
         player.transform.position = teleports[id+1].transform.position;
-        teleports[id + 1].enabled = false;
+        teleports[id + 1].gameObject.SetActive(false);
         //Debug.Log(teleports[id + 1].transform.position);
         isTeleported = true;
     }

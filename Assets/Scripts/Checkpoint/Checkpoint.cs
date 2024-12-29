@@ -12,7 +12,6 @@ public class Checkpoint : MonoBehaviour
     }
     private void OnTriggerEnter()
     {
-        Debug.Log("Player entered the checkpoint volume!");
         revive.position = this.transform.position;
     }
 }

@@ -7,16 +7,15 @@ public class Mission1 : AAMissionTemplate
     private int indicator = -1;
     public GameObject player;
     private MovePlayer movePlayer;
+    public GameObject teleportGroup;
 
     private void OnEnable()
     {
-        // Subscribe to the event
         Teleport.OnTeleportTriggered += RespondToTeleport;
     }
 
     private void OnDisable()
     {
-        // Unsubscribe to avoid memory leaks
         Teleport.OnTeleportTriggered -= RespondToTeleport;
     }
     void Update()
@@ -33,6 +32,7 @@ public class Mission1 : AAMissionTemplate
                 case 1:
                     if (mc.message.clicked == true)
                     {
+                        teleportGroup.SetActive(true);
                         mc.message.createNew("Please go the indicated teleport", true);
                         phaseNumber++;
                     }
