@@ -140,20 +140,13 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetString("rebindings", rebindings);
         PlayerPrefs.Save(); // Ensures the data is written to disk
         FindObjectOfType<MovePlayer>().RefreshBindings();
-
-        Debug.Log("saved");
     }
 
     public void LoadBindings()
     {
         string savedRebindings = PlayerPrefs.GetString("rebindings", null);
         if (!string.IsNullOrEmpty(savedRebindings))
-        {
-            Debug.Log("ciagnie");
             inputActions.LoadBindingOverridesFromJson(savedRebindings);
-        }
-        else
-            Debug.Log("ssie");
     }
 
 }

@@ -15,6 +15,8 @@ public class Message : MonoBehaviour
     public bool clicked = false;
     private Vector3 scaleLarge;
     private Vector3 scaleSmall;
+    public GameObject playerCamera;
+    CameraController cameraController;
 
     void Start()    
     {
@@ -23,6 +25,7 @@ public class Message : MonoBehaviour
         scaleSmall.x = 0.2f;
         scaleSmall.y = 0.2f;
         panel.SetActive(false);
+        cameraController = playerCamera.GetComponent<CameraController>();
     }
 
     private void Update()
@@ -49,6 +52,7 @@ public class Message : MonoBehaviour
         {
             panel.SetActive(false); 
         }
+        cameraController.freezeRotation = false;
     }
 
     public void createNew(string mes, bool min)
@@ -60,6 +64,7 @@ public class Message : MonoBehaviour
         button.SetActive(true);
         panel.SetActive(true);
         minimize = min;
+        cameraController.freezeRotation = true;
     }
 
     private void moveToCenter()

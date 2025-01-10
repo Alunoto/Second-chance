@@ -8,6 +8,8 @@ public class Mission1 : AAMissionTemplate
     public GameObject player;
     private MovePlayer movePlayer;
     public GameObject teleportGroup;
+    public GameObject arrow;
+    private RotateArrow rotateArrow;
 
     private void OnEnable()
     {
@@ -18,6 +20,7 @@ public class Mission1 : AAMissionTemplate
     {
         Teleport.OnTeleportTriggered -= RespondToTeleport;
     }
+
     void Update()
     {
         phaseSelector(ref phaseNumber);
@@ -32,8 +35,10 @@ public class Mission1 : AAMissionTemplate
                 case 1:
                     if (mc.message.clicked == true)
                     {
+                        rotateArrow = arrow.GetComponent<RotateArrow>();
                         teleportGroup.SetActive(true);
                         mc.message.createNew("Please go the indicated teleport", true);
+                        rotateArrow.targetPos = new Vector3(-170f, 1101f, 33); 
                         phaseNumber++;
                     }
                     break;
@@ -41,6 +46,7 @@ public class Mission1 : AAMissionTemplate
                     if (indicator == 0)
                     {
                         mc.message.createNew("Please go the next one", true);
+                        rotateArrow.targetPos = new Vector3(-2f, 870f, -289f);
                         phaseNumber++;
                     }
                     break;

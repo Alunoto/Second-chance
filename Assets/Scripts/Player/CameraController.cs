@@ -11,7 +11,8 @@ public class CameraController : MonoBehaviour
 
     public GameObject player;
     private MovePlayer movePlayer;
-    Vector3 customDown, customRight, customForward, customUp, forwardRotated;
+    public Vector3 customDown, customRight, customForward, customUp, forwardRotated;
+    public bool freezeRotation = false;
 
     public Transform orientation;
 
@@ -26,6 +27,8 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (freezeRotation)
+            return;
         float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
         float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
 

@@ -7,12 +7,10 @@ public class Tutorial : MonoBehaviour
     protected MessageConnector mc;
     public int phaseNumber = 0;
     private bool indicator = false;
-    private int prevJump = 1000000, prevRev = 1000000;
 
 
     private void Start()
     {
-        //this.enabled = false; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         mc = GetComponent<MessageConnector>();
     }
 
@@ -40,7 +38,7 @@ public class Tutorial : MonoBehaviour
         switch (phaseNumber)
         {
             case 0:
-                mc.message.createNew("Mission and message system", false);
+                mc.message.createNew("Welcome to new toroidal world, complete tutorial and mission to escape", false);
                 phaseNumber++;
                 break;
             case 1:
@@ -60,7 +58,7 @@ public class Tutorial : MonoBehaviour
             case 3:
                 if( indicator )
                 {
-                    mc.message.createNew("To reverse button press left control or button set in settings", true);
+                    mc.message.createNew("To reverse gravity press left control or button set in settings", true);
                     phaseNumber++;
                     indicator = false;
                 }
@@ -73,8 +71,13 @@ public class Tutorial : MonoBehaviour
                     indicator = false;
                 }
                 break;
+            case 5:
+                mc.message.createNew("in the left right corner you can see arrow that points to your next objective", false);
+                phaseNumber++;
+                break;
             default:
-                End();
+                if (mc.message.clicked == true)
+                    End();
                 break;
         }
     }
